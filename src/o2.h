@@ -83,6 +83,13 @@ public:
     QString refreshTokenUrl();
     void setRefreshTokenUrl(const QString &value);
 
+    /// PKCE Code Verifier
+    /// See https://tools.ietf.org/html/rfc7636
+    /// A code verifier can be created by generating 32 cryptographically secure random bytes, and encoding them with base64-url encoding
+    Q_PROPERTY(QByteArray codeVerifier READ codeVerifier WRITE setCodeVerifier NOTIFY codeVerifierChanged)
+    QByteArray codeVerifier();
+    void setCodeVerifier(const QByteArray &value);
+
 public:
     /// Constructor.
     /// @param  parent  Parent object.
@@ -123,6 +130,7 @@ Q_SIGNALS:
     void extraRequestParamsChanged();
     void refreshTokenUrlChanged();
     void tokenUrlChanged();
+    void codeVerifierChanged();
 
 public Q_SLOTS:
     /// Handle verification response.
@@ -168,6 +176,7 @@ protected:
     QNetworkAccessManager *manager_;
     O2ReplyList timedReplies_;
     GrantFlow grantFlow_;
+    QByteArray codeVerifier_;
 };
 
 #endif // O2_H

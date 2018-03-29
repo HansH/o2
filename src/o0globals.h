@@ -44,6 +44,11 @@ const char O2_OAUTH2_GRANT_TYPE_PASSWORD[] = "password";
 const char O2_OAUTH2_GRANT_TYPE[] = "grant_type";
 const char O2_OAUTH2_API_KEY[] = "api_key";
 
+// PKCE Request Parameters
+const char O2_PKCE_CODE_CHALLENGE[] = "code_challenge";
+const char O2_PKCE_CODE_CHALLENGE_METHOD[] = "code_challenge_method";
+const char O2_PKCE_CODE_VERIFIER[] = "code_verifier";
+
 // OAuth 2 Response Parameters
 const char O2_OAUTH2_ACCESS_TOKEN[] = "access_token";
 const char O2_OAUTH2_REFRESH_TOKEN[] = "refresh_token";

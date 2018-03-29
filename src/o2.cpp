@@ -148,6 +148,15 @@ void O2::setRefreshTokenUrl(const QString &value) {
     Q_EMIT refreshTokenUrlChanged();
 }
 
+QByteArray O2::codeVerifier() {
+    return codeVerifier_;
+}
+
+void O2::setCodeVerifier(const QByteArray &value) {
+    codeVerifier_ = value;
+    Q_EMIT codeVerifierChanged();
+}
+
 void O2::link() {
     qDebug() << "O2::link";
 
@@ -207,6 +216,12 @@ void O2::link() {
         foreach (QString key, extraRequestParams().keys()) {
             parameters.append(qMakePair(key, extraRequestParams().value(key).toString()));
         }
+        if(!codeVerifier_.isEmpty()) {
+            parameters.append(qMakePair(QString(O2_PKCE_CODE_CHALLENGE),
+                                        QCryptographicHash::hash(codeVerifier_, QCryptographicHash::Sha256).toBase64(QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals)));
+            parameters.append(qMakePair(QString(O2_PKCE_CODE_CHALLENGE_METHOD), QString("S256")));
+        }
+
         // Show authentication URL with a web browser
         QUrl url(requestUrl_);
         addQueryParametersToUrl(url, parameters);
@@ -277,6 +292,9 @@ void O2::onVerificationReceived(const QMap<QString, QString> response) {
         parameters.insert(O2_OAUTH2_CLIENT_SECRET, clientSecret_);
         parameters.insert(O2_OAUTH2_REDIRECT_URI, redirectUri_);
         parameters.insert(O2_OAUTH2_GRANT_TYPE, O2_AUTHORIZATION_CODE);
+        if(!codeVerifier_.isEmpty()) {
+            parameters.insert(O2_PKCE_CODE_VERIFIER, codeVerifier_);
+        }
         QByteArray data = buildRequestBody(parameters);
 
         qDebug() << QString("O2::onVerificationReceived: Exchange access code data:\n%1").arg(QString(data));
